@@ -7,19 +7,16 @@ import os
 import re
 import tempfile
 import uuid
+from io import BytesIO
 
-# Definir caminhos dos arquivos Excel templates (originais)
-TEMPLATE_PATH1 = r"F:\Scripts\Forms\test1.xlsx"
-TEMPLATE_PATH2 = r"F:\Scripts\Forms\test2.xlsx"
-
-# Diretório onde as cópias serão salvas
-SAVE_DIR = r"F:\Scripts\Forms"
+# Definir caminhos relativos para os templates e logo (assumindo que estão na raiz do repositório)
+TEMPLATE_PATH1 = "test1.xlsx"
+TEMPLATE_PATH2 = "test2.xlsx"
+MERCK_LOGO = "merck1.jpg"
 
 # Função para sanitizar o nome da empresa para uso em nomes de arquivos
 def sanitize_filename(name):
-    # Remover caracteres inválidos
     name = re.sub(r'[\/:*?"<>|]', '', name)
-    # Substituir espaços por underscores
     name = name.replace(' ', '_')
     return name
 
@@ -28,35 +25,37 @@ def generate_unique_name(base_name, empresa):
     sanitized_empresa = sanitize_filename(empresa)
     return f"{base_name}_{sanitized_empresa}.xlsx"
 
-# Função para salvar dados nos arquivos Excel
-def save_to_excel(path, data, cells, image_keys):
-    wb = load_workbook(path)
+# Função para salvar dados nos arquivos Excel e retornar o arquivo como bytes
+def save_to_excel(template_path, data, cells, image_keys):
+    wb = load_workbook(template_path)
     ws = wb.active
-    temp_files = []  # Lista para rastrear arquivos temporários
+    temp_files = []
 
     for key, cell in cells.items():
-        if key in image_keys and data[key] is not None:  # Se for uma imagem
+        if key in image_keys and data[key] is not None:
             temp_img_path = os.path.join(tempfile.gettempdir(), f"{key}_{uuid.uuid4()}.png")
             with open(temp_img_path, "wb") as f:
-                f.write(data[key].getvalue())  # Salvar os bytes da imagem
+                f.write(data[key].getvalue())
             img = OpenpyxlImage(temp_img_path)
-            ws.add_image(img, cell)  # Inserir a imagem na célula
-            temp_files.append(temp_img_path)  # Adicionar à lista
+            ws.add_image(img, cell)
+            temp_files.append(temp_img_path)
         else:
-            # Para dados de texto ou None
             ws[cell] = data[key]
 
-    # Salvar o arquivo Excel
-    wb.save(path)
+    # Salvar em um buffer de memória em vez de no disco
+    buffer = BytesIO()
+    wb.save(buffer)
+    buffer.seek(0)
 
-    # Remover os arquivos temporários após o salvamento
+    # Limpar arquivos temporários
     for temp_file in temp_files:
         if os.path.exists(temp_file):
             os.remove(temp_file)
 
+    return buffer
+
 # Logo
-merck_logo = r'F:\Scripts\Forms\merck1.jpg'
-st.logo(merck_logo, size='large')
+st.logo(MERCK_LOGO, size='large')
 
 # Título do formulário
 st.title("Registration Form")
@@ -145,11 +144,11 @@ with st.expander('Comprovants'):
     with col11:
         comprovante_endereco = st.file_uploader("Address Proof", type=['jpg', 'jpeg', 'png'])
         cartao_receita_federal = st.file_uploader("Federal Tax Card", type=['jpg', 'jpeg', 'png'], help='www.receita.fazenda.gov.br')
-        exclusivo_pessoa_fisica = st.file_uploader("Exclusive for Individuals - ", type=['jpg', 'jpeg', 'png'], help='http://buscatextual.cnpq.br/buscatextual/busca.do?metodo=apresentar. If the individual does not have a Lates CV, he/she must present other proof')
+        exclusivo_pessoa_fisica = st.file_uploader("Exclusive for Individuals", type=['jpg', 'jpeg', 'png'], help='http://buscatextual.cnpq.br/buscatextual/busca.do?metodo=apresentar')
     
     with col12:
-        cartao_sintegra = st.file_uploader("Sintegra Card", type=['jpg', 'jpeg', 'png'], help='Somente para empresas que possui I.E. (www.sintegra.gov.br)')
-        cartao_suframa = st.file_uploader("Suframa Card", type=['jpg', 'jpeg', 'png'], help='Somente para empresa que possui Inscrição Suframa, https://servicos.suframa.gov.br/servicos')
+        cartao_sintegra = st.file_uploader("Sintegra Card", type=['jpg', 'jpeg', 'png'], help='www.sintegra.gov.br')
+        cartao_suframa = st.file_uploader("Suframa Card", type=['jpg', 'jpeg', 'png'], help='https://servicos.suframa.gov.br/servicos')
 
 # Dicionário com os dados do formulário
 data = {
@@ -299,17 +298,22 @@ if st.button("Send"):
         # Gerar nomes de arquivos baseados no nome da empresa
         filename1 = generate_unique_name("test1", nome_empresa)
         filename2 = generate_unique_name("test2", nome_empresa)
-        
-        # Caminhos completos para as cópias
-        copy_path1 = os.path.join(SAVE_DIR, filename1)
-        copy_path2 = os.path.join(SAVE_DIR, filename2)
-        
-        # Copiar os templates para os novos caminhos
-        shutil.copy(TEMPLATE_PATH1, copy_path1)
-        shutil.copy(TEMPLATE_PATH2, copy_path2)
-        
-        # Salvar os dados nas cópias
-        save_to_excel(copy_path1, data, cells_test1, image_keys)
-        save_to_excel(copy_path2, data, cells_test2, image_keys)
-        
-        st.success(f"Information saved and sent successfully!")
+
+        # Gerar os arquivos Excel em memória
+        file1_buffer = save_to_excel(TEMPLATE_PATH1, data, cells_test1, image_keys)
+        file2_buffer = save_to_excel(TEMPLATE_PATH2, data, cells_test2, image_keys)
+
+        # Exibir botões de download
+        st.success("Information saved successfully! Download the files below:")
+        st.download_button(
+            label="Download test1.xlsx",
+            data=file1_buffer,
+            file_name=filename1,
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        st.download_button(
+            label="Download test2.xlsx",
+            data=file2_buffer,
+            file_name=filename2,
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
