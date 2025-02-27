@@ -253,7 +253,7 @@ with st.expander('Comprovantes'):
     with col12:
         cartao_sintegra = st.file_uploader("Cartão do Sintegra", type=['jpg', 'jpeg', 'png'], help='Somente para empresas que possui I.E. (www.sintegra.gov.br)', key='cartao_sintegra')
         cartao_suframa = st.file_uploader("Cartão Suframa", type=['jpg', 'jpeg', 'png'], help='Somente para empresa que possui Inscrição Suframa, https://servicos.suframa.gov.br/servicos', key='cartao_suframa')
-        comprovante_faturamento = st.file_uploader("Comprovante de Faturamento", type=['jpg', 'jpeg', 'png'], key='comprovante_faturamento')
+        comprovante_faturamento = st.file_uploader("Contrato Social, Balanço Patrimonial, DRE ou Cartão CNPJ", type=['jpg', 'jpeg', 'png'], key='comprovante_faturamento')
 
 # Dicionário com os dados do formulário
 data = {
