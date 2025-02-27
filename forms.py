@@ -427,7 +427,7 @@ if st.button("Enviar"):
                             <h2 style='color: white;'>Formulário de cadastro enviado com sucesso!</h2>
                             <p style='color: white;'>Seu formulário está agora com o time global. Assim que o cadastro for concluído, entraremos em contato.</p>
                             <h1 style='color: #2dbecd; font-size: 40px;'>CUPOM123</h1>
-                            <p style='color: white;'>Aproveite seu desconto em nossa loja online: <a href='http://www.google.com.br' target='_blank' style='color: #2dbecd;'>www.google.com.br</a></p>
+                            <p style='color: white;'>Aproveite seu desconto em nossa loja online: <a href='https://www.sigmaaldrich.com/BR/pt' target='_blank' style='color: #2dbecd;'>www.google.com.br</a></p>
                         </div>
                     """, unsafe_allow_html=True)
                     st.balloons()
