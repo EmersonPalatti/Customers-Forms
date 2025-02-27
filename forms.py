@@ -249,7 +249,7 @@ with st.expander('Comprovantes'):
     with col11:
         comprovante_endereco = st.file_uploader("Comprovante de Endereço", type=['jpg', 'jpeg', 'png'], key='comprovante_endereco')
         cartao_receita_federal = st.file_uploader("Cartão da Receita Federal", type=['jpg', 'jpeg', 'png'], help='www.receita.fazenda.gov.br', key='cartao_receita_federal')
-        exclusivo_pessoa_fisica = st.file_uploader("Exclusivo Pessoa Física - Vínculo com uma Instituição", type=['jpg', 'jpeg', 'png'], help='http://buscatextual.cnpq.br/buscatextual/busca.do?metodo=apresentar. Se a pessoa física não tiver um curriculo Lates, deverá apresentar outra comprovação.', key='exclusivo_pessoa_fisica')
+        exclusivo_pessoa_fisica = st.file_uploader("Exclusivo para Pessoa Física - Vínculo com uma Instituição", type=['jpg', 'jpeg', 'png'], help='http://buscatextual.cnpq.br/buscatextual/busca.do?metodo=apresentar. Se a pessoa física não tiver um curriculo Lates, deverá apresentar outra comprovação.', key='exclusivo_pessoa_fisica')
     with col12:
         cartao_sintegra = st.file_uploader("Cartão do Sintegra", type=['jpg', 'jpeg', 'png'], help='Somente para empresas que possui I.E. (www.sintegra.gov.br)', key='cartao_sintegra')
         cartao_suframa = st.file_uploader("Cartão Suframa", type=['jpg', 'jpeg', 'png'], help='Somente para empresa que possui Inscrição Suframa, https://servicos.suframa.gov.br/servicos', key='cartao_suframa')
