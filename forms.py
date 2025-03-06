@@ -174,10 +174,16 @@ with st.expander('Endereço'):
                     shipping_sala = st.text_input("Sala", key='ship_to_sala')
             else:
                 shipping_sigla_universidade = shipping_sigla_instituto = shipping_departamento = shipping_laboratorio = shipping_bloco_predio = shipping_andar = shipping_sala = None
+            
+            # Novo campo para comprovante de endereço de entrega
+            st.write("Comprovante de Endereço de Entrega")
+            shipping_comprovante_endereco = st.file_uploader("Comprovante de Endereço de Entrega", type=['jpg', 'jpeg', 'png'], key='shipping_comprovante_endereco')
+            st.caption("O comprovante de endereço deve ser obtido em https://buscacepinter.correios.com.br/app/endereco/index.php. Tire um print e anexe aqui.")
         else:
             shipping_endereco = shipping_endereco_n = shipping_endereco_bairro = shipping_cep = None
             shipping_cidade = shipping_uf = shipping_caixa_postal = None
             shipping_sigla_universidade = shipping_sigla_instituto = shipping_departamento = shipping_laboratorio = shipping_bloco_predio = shipping_andar = shipping_sala = None
+            shipping_comprovante_endereco = None
 
 with st.expander('Informações de contato - Solicitante do Cadastro'):
     nome_contato = st.text_input("Nome", key='nome_contato')
@@ -294,6 +300,7 @@ data = {
     "shipping_bloco_predio": shipping_bloco_predio,
     "shipping_andar": shipping_andar,
     "shipping_sala": shipping_sala,
+    "shipping_comprovante_endereco": shipping_comprovante_endereco,  # Novo campo adicionado
     "nome_contato": nome_contato,
     "cargo": cargo,
     "email_contato": email_contato,
@@ -377,16 +384,18 @@ cells_ship_to = {
     "shipping_laboratorio": "H19",
     "shipping_bloco_predio": "J19",
     "shipping_andar": "K19",
-    "shipping_sala": "L19"
+    "shipping_sala": "L19",
+    "shipping_comprovante_endereco": "C43"  # Novo campo adicionado para a célula C43
 }
 
-# Lista de chaves que correspondem a imagens (sem comprovante_faturamento)
+# Lista de chaves que correspondem a imagens (agora incluindo shipping_comprovante_endereco)
 image_keys = [
     "comprovante_endereco",
     "cartao_receita_federal",
     "exclusivo_pessoa_fisica",
     "cartao_sintegra",
-    "cartao_suframa"
+    "cartao_suframa",
+    "shipping_comprovante_endereco"  # Adicionado à lista de imagens
 ]
 
 # Configurações de e-mail usando st.secrets
