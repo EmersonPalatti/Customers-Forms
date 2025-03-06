@@ -434,8 +434,8 @@ if st.button("Enviar"):
                     st.markdown("""
                         <div style='text-align: center; padding: 20px; border: 2px solid rgb(235, 60, 150); border-radius: 10px; background-color: rgb(79, 53, 140);'>
                             <h2 style='color: white;'>Formulário de cadastro enviado com sucesso!</h2>
-                            <p style='color: white;'>Seu formulário está agora com o time global. Assim que o cadastro for concluído, entraremos em contato.</p>
-                            <h1 style='color: #2dbecd; font-size: 40px;'>CUPOM123</h1>
+                            <p style='color: white;'>Obrigada pelo interesse em nossos produtos!\nEstamos comprometidos com a sustentabilidade e impulsionados pela paixão por inovação\nObrigado por fazer parte dessa jornada conosco!\nSeu formulário está na mãos do nosso Time de Cadastros. Assim que o cadastro for concluído, entraremos em contato.</p>
+                            <h1 style='color: #2dbecd; font-size: 40px;'>TWC</h1>
                             <p style='color: white;'>Aproveite seu desconto em nossa loja online: <a href='https://www.sigmaaldrich.com/BR/pt' target='_blank' style='color: #2dbecd;'>https://www.sigmaaldrich.com/BR/pt</a></p>
                         </div>
                     """, unsafe_allow_html=True)
