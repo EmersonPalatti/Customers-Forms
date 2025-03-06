@@ -175,10 +175,11 @@ with st.expander('Endereço'):
             else:
                 shipping_sigla_universidade = shipping_sigla_instituto = shipping_departamento = shipping_laboratorio = shipping_bloco_predio = shipping_andar = shipping_sala = None
             
-            # Novo campo para comprovante de endereço de entrega
-            st.write("Comprovante de Endereço de Entrega")
-            shipping_comprovante_endereco = st.file_uploader("Comprovante de Endereço de Entrega", type=['jpg', 'jpeg', 'png'], key='shipping_comprovante_endereco')
-            st.caption("O comprovante de endereço deve ser obtido em https://buscacepinter.correios.com.br/app/endereco/index.php. Tire um print e anexe aqui.")
+            # Novo campo para comprovante de endereço de entrega dentro de um container
+            with st.container(border=True):
+                st.write("Comprovante de Endereço de Entrega")
+                shipping_comprovante_endereco = st.file_uploader("Comprovante de Endereço de Entrega", type=['jpg', 'jpeg', 'png'], key='shipping_comprovante_endereco')
+                st.caption("O comprovante de endereço deve ser obtido em https://buscacepinter.correios.com.br/app/endereco/index.php. Tire um print e anexe aqui.")
         else:
             shipping_endereco = shipping_endereco_n = shipping_endereco_bairro = shipping_cep = None
             shipping_cidade = shipping_uf = shipping_caixa_postal = None
@@ -300,7 +301,7 @@ data = {
     "shipping_bloco_predio": shipping_bloco_predio,
     "shipping_andar": shipping_andar,
     "shipping_sala": shipping_sala,
-    "shipping_comprovante_endereco": shipping_comprovante_endereco,  # Novo campo adicionado
+    "shipping_comprovante_endereco": shipping_comprovante_endereco,
     "nome_contato": nome_contato,
     "cargo": cargo,
     "email_contato": email_contato,
@@ -385,17 +386,17 @@ cells_ship_to = {
     "shipping_bloco_predio": "J19",
     "shipping_andar": "K19",
     "shipping_sala": "L19",
-    "shipping_comprovante_endereco": "C43"  # Novo campo adicionado para a célula C43
+    "shipping_comprovante_endereco": "C43"
 }
 
-# Lista de chaves que correspondem a imagens (agora incluindo shipping_comprovante_endereco)
+# Lista de chaves que correspondem a imagens
 image_keys = [
     "comprovante_endereco",
     "cartao_receita_federal",
     "exclusivo_pessoa_fisica",
     "cartao_sintegra",
     "cartao_suframa",
-    "shipping_comprovante_endereco"  # Adicionado à lista de imagens
+    "shipping_comprovante_endereco"
 ]
 
 # Configurações de e-mail usando st.secrets
@@ -431,14 +432,17 @@ if st.button("Enviar"):
                 body = f"Segue em anexo os arquivos preenchidos para {nome_empresa}.\n\nEnviado automaticamente pelo formulário Streamlit."
                 if send_email(SENDER_EMAIL, RECEIVER_EMAIL, subject, body, files, EMAIL_PASSWORD):
                     st.success("Formulário enviado com sucesso!")
-                    st.markdown("""
+                    st.markdown(
+                        """
                         <div style='text-align: center; padding: 20px; border: 2px solid rgb(235, 60, 150); border-radius: 10px; background-color: rgb(79, 53, 140);'>
                             <h2 style='color: white;'>Formulário de cadastro enviado com sucesso!</h2>
-                            <p style='color: white;'>Obrigada pelo interesse em nossos produtos!\nEstamos comprometidos com a sustentabilidade e impulsionados pela paixão por inovação\nObrigado por fazer parte dessa jornada conosco!\nSeu formulário está na mãos do nosso Time de Cadastros. Assim que o cadastro for concluído, entraremos em contato.</p>
+                            <p style='color: white;'>Obrigada pelo interesse em nossos produtos!<br>Estamos comprometidos com a sustentabilidade e impulsionados pela paixão por inovação.<br>Obrigado por fazer parte dessa jornada conosco!<br>Seu formulário está nas mãos do nosso Time de Cadastros. Assim que o cadastro for concluído, entraremos em contato.</p>
                             <h1 style='color: #2dbecd; font-size: 40px;'>TWC</h1>
                             <p style='color: white;'>Aproveite seu desconto em nossa loja online: <a href='https://www.sigmaaldrich.com/BR/pt' target='_blank' style='color: #2dbecd;'>https://www.sigmaaldrich.com/BR/pt</a></p>
                         </div>
-                    """, unsafe_allow_html=True)
+                        """,
+                        unsafe_allow_html=True
+                    )
                     st.balloons()
                 else:
                     st.error("Falha ao enviar o e-mail. Verifique as credenciais ou a conexão.")
