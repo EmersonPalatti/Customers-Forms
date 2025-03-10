@@ -105,28 +105,28 @@ st.logo(LOGO_PATH, size='large')
 st.title("Formulário para Cadastro")
 
 with st.expander('Dados de Cadastro', expanded=True):
-    nome_empresa = st.text_input("Razão Social", placeholder='Merck S/A')
+    nome_empresa = st.text_input("Razão Social *", placeholder='Merck S/A')
     col1, col2 = st.columns(2)
     with col1:
-        cnpj = st.text_input("CNPJ/CPF", placeholder='33.069.212/0038-76', help='CPF or CNPJ, Format: XX.XXX.XXX/XXXX-XX')
+        cnpj = st.text_input("CNPJ/CPF *", placeholder='33.069.212/0038-76', help='CPF or CNPJ, Format: XX.XXX.XXX/XXXX-XX')
         inscricao_estadual = st.text_input('Inscrição Estadual')
         n_suframa = st.text_input('Número Suframa')
         cod_df = st.text_input('Código DF')
     with col2:
-        telefone_fixo = st.text_input("Telefone Fixo", placeholder='(00) 0000-0000')
+        telefone_fixo = st.text_input("Telefone Fixo *", placeholder='(00) 0000-0000')
         celular = st.text_input("Telefone Celular", placeholder='(00) 00000-0000')
-        email = st.text_input("Email para envio do XML", help='No caso de pessoa física deverá ser o e-mail da pessoa que está sendo cadastrada.')
+        email = st.text_input("Email para envio do XML *", help='No caso de pessoa física deverá ser o e-mail da pessoa que está sendo cadastrada.')
 
 with st.expander('Endereço'):
     col3, col4 = st.columns(2)
     with col3:
-        endereco = st.text_input("Endereço", placeholder='Alameda Xingu')
-        endereco_n = st.text_input("Número", placeholder='350')
-        endereco_bairro = st.text_input("Bairro", placeholder='Alphaville Industrial')
-        cep = st.text_input("CEP", placeholder='06455-030', help='Format: 00000-000')
+        endereco = st.text_input("Endereço *", placeholder='Alameda Xingu')
+        endereco_n = st.text_input("Número *", placeholder='350')
+        endereco_bairro = st.text_input("Bairro *", placeholder='Alphaville Industrial')
+        cep = st.text_input("CEP *", placeholder='06455-030', help='Format: 00000-000')
     with col4:
-        cidade = st.text_input("Cidade", placeholder='Barueri')
-        uf = st.text_input("Estado", placeholder='SP')
+        cidade = st.text_input("Cidade *", placeholder='Barueri')
+        uf = st.text_input("Estado *", placeholder='SP')
         caixa_postal = st.text_input("Caixa Postal")
     
     complement = st.toggle('Endereço necessita de complemento?', key='complement', help='Complemento (Ex: Bloco, Sala, etc.)')
@@ -175,7 +175,6 @@ with st.expander('Endereço'):
             else:
                 shipping_sigla_universidade = shipping_sigla_instituto = shipping_departamento = shipping_laboratorio = shipping_bloco_predio = shipping_andar = shipping_sala = None
             
-            # Novo campo para comprovante de endereço de entrega dentro de um container
             with st.container(border=True):
                 st.write("Comprovante de Endereço de Entrega")
                 shipping_comprovante_endereco = st.file_uploader("Comprovante de Endereço de Entrega", type=['jpg', 'jpeg', 'png'], key='shipping_comprovante_endereco')
@@ -195,8 +194,8 @@ with st.expander('Informações de contato - Solicitante do Cadastro'):
 with st.expander('Informações de Contribuição'):
     col7, col8 = st.columns(2)
     with col7:
-        tipo_empresa = st.selectbox("Tipo de Empresa", ('Publica', 'Privada', 'Mista'), placeholder='Escolha uma opção.', index=None, key='tipo_empresa')
-        uso_produtos = st.selectbox("Uso dos Produtos", (
+        tipo_empresa = st.selectbox("Tipo de Empresa *", ('Publica', 'Privada', 'Mista'), placeholder='Escolha uma opção.', index=None, key='tipo_empresa')
+        uso_produtos = st.selectbox("Uso dos Produtos *", (
             'C3 = Consumidor Final: ICMS + IPI',
             'I3 = Industrialização: ICMS + IPI',
             'C5 = Consumidor Final: IPI', 
@@ -214,7 +213,7 @@ with st.expander('Informações de Contribuição'):
             'IX = Industrialização: ICMS somente'
         ), placeholder='Escolha uma opção.', index=None, key='uso_produtos')
     with col8:
-        area_atuacao_empresa = st.selectbox("Área de Atuação da Empresa", (
+        area_atuacao_empresa = st.selectbox("Área de Atuação da Empresa *", (
             'Ind./Comm./General',
             'Chemical Industry',
             'Government/nonprofit',
@@ -233,11 +232,11 @@ with st.expander('Informações de Contribuição'):
         st.write('Incentivo Fiscal')
         col9, col10 = st.columns(2)
         with col9:
-            icms = st.selectbox("ICMS", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='icms')
-            ipi = st.selectbox("IPI", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='ipi')
+            icms = st.selectbox("ICMS *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='icms')
+            ipi = st.selectbox("IPI *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='ipi')
         with col10:    
-            pis = st.selectbox("PIS", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='pis')
-            cofins = st.selectbox("COFINS", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='cofins')
+            pis = st.selectbox("PIS *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='pis')
+            cofins = st.selectbox("COFINS *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='cofins')
         observacao_incentivo_geral = st.text_area("Observação", placeholder='Observação(ões) sobre Incentivo Fiscal', key='observacao_incentivo_geral')
 
 with st.expander('Empresas Coligadas (preencher somente se necessário)'):
@@ -254,13 +253,13 @@ with st.expander('Empresas Coligadas (preencher somente se necessário)'):
 with st.expander('Comprovantes'):
     col11, col12 = st.columns(2)
     with col11:
-        comprovante_endereco = st.file_uploader("Comprovante de Endereço", type=['jpg', 'jpeg', 'png'], key='comprovante_endereco')
-        cartao_receita_federal = st.file_uploader("Cartão da Receita Federal", type=['jpg', 'jpeg', 'png'], help='www.receita.fazenda.gov.br', key='cartao_receita_federal')
+        comprovante_endereco = st.file_uploader("Comprovante de Endereço *", type=['jpg', 'jpeg', 'png'], key='comprovante_endereco')
+        cartao_receita_federal = st.file_uploader("Cartão da Receita Federal *", type=['jpg', 'jpeg', 'png'], help='www.receita.fazenda.gov.br', key='cartao_receita_federal')
         exclusivo_pessoa_fisica = st.file_uploader("Exclusivo para Pessoa Física - Vínculo com uma Instituição", type=['jpg', 'jpeg', 'png'], help='http://buscatextual.cnpq.br/buscatextual/busca.do?metodo=apresentar. Se a pessoa física não tiver um curriculo Lates, deverá apresentar outra comprovação.', key='exclusivo_pessoa_fisica')
     with col12:
         cartao_sintegra = st.file_uploader("Cartão do Sintegra", type=['jpg', 'jpeg', 'png'], help='Somente para empresas que possui I.E. (www.sintegra.gov.br)', key='cartao_sintegra')
         cartao_suframa = st.file_uploader("Cartão Suframa", type=['jpg', 'jpeg', 'png'], help='Somente para empresa que possui Inscrição Suframa, https://servicos.suframa.gov.br/servicos', key='cartao_suframa')
-        comprovante_faturamento = st.file_uploader("Contrato Social, Balanço Patrimonial, DRE ou Cartão CNPJ", type=['jpg', 'jpeg', 'png'], key='comprovante_faturamento')
+        comprovante_faturamento = st.file_uploader("Contrato Social, Balanço Patrimonial, DRE ou Cartão CNPJ *", type=['jpg', 'jpeg', 'png'], key='comprovante_faturamento')
 
 # Dicionário com os dados do formulário
 data = {
@@ -406,8 +405,39 @@ EMAIL_PASSWORD = st.secrets["EMAIL_PASSWORD"]
 
 # Botão para enviar os dados
 if st.button("Enviar"):
-    if not nome_empresa:
-        st.error("Por favor, preencha o nome da empresa.")
+    # Lista de campos obrigatórios
+    required_fields = {
+        "nome_empresa": "Razão Social",
+        "cnpj": "CNPJ/CPF",
+        "telefone_fixo": "Telefone Fixo",
+        "email": "Email para envio do XML",
+        "endereco": "Endereço",
+        "endereco_n": "Número",
+        "endereco_bairro": "Bairro",
+        "cep": "CEP",
+        "cidade": "Cidade",
+        "uf": "Estado",
+        "tipo_empresa": "Tipo de Empresa",
+        "uso_produtos": "Uso dos Produtos",
+        "area_atuacao_empresa": "Área de Atuação da Empresa",
+        "icms": "ICMS",
+        "ipi": "IPI",
+        "pis": "PIS",
+        "cofins": "COFINS",
+        "comprovante_endereco": "Comprovante de Endereço",
+        "cartao_receita_federal": "Cartão da Receita Federal",
+        "comprovante_faturamento": "Contrato Social, Balanço Patrimonial, DRE ou Cartão CNPJ"
+    }
+
+    # Verificar se todos os campos obrigatórios estão preenchidos
+    missing_fields = []
+    for field, label in required_fields.items():
+        value = data.get(field)
+        if value is None or (isinstance(value, str) and not value.strip()):
+            missing_fields.append(label)
+
+    if missing_fields:
+        st.error(f"Por favor, preencha os seguintes campos obrigatórios: {', '.join(missing_fields)}")
     else:
         with st.spinner("Processando e enviando os dados..."):
             with tempfile.TemporaryDirectory() as temp_dir:
