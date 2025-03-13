@@ -71,7 +71,7 @@ def save_to_excel(path, data, cells_sold_to, cells_ship_to, image_keys, sheet_so
         if os.path.exists(temp_file):
             os.remove(temp_file)
 
-# Função para enviar e-mail com anexos
+# Função para enviar e-mail com anexos (corrigida)
 def send_email(sender_email, receiver_email, subject, body, files, password):
     msg = MIMEMultipart()
     msg['From'] = sender_email
@@ -81,10 +81,13 @@ def send_email(sender_email, receiver_email, subject, body, files, password):
 
     for file_path in files:
         with open(file_path, 'rb') as f:
-            part = MIMEBase('application', 'octet-stream')
+            # Usar tipo MIME específico para arquivos .xlsx
+            part = MIMEBase('application', 'vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             part.set_payload(f.read())
             encoders.encode_base64(part)
-            part.add_header('Content-Disposition', f'attachment; filename={os.path.basename(file_path)}')
+            # Explicitamente definir o nome do arquivo com a extensão .xlsx
+            filename = os.path.basename(file_path)
+            part.add_header('Content-Disposition', f'attachment; filename="{filename}"')
             msg.attach(part)
 
     try:
@@ -128,12 +131,12 @@ with st.expander('Endereço'):
         cidade = st.text_input("Cidade *", placeholder='Barueri')
         uf = st.text_input("Estado *", placeholder='SP')
         caixa_postal = st.text_input("Caixa Postal")
-    
+
     complement = st.toggle('Endereço necessita de complemento?', key='complement', help='Complemento (Ex: Bloco, Sala, etc.)')
     if complement:
         st.write('Complementos')
         col5, col6 = st.columns(2)
-        with col5:    
+        with col5:
             sigla_universidade = st.text_input("Sigla da Universidade", key='sold_to_universidade')
             sigla_instituto = st.text_input("Sigla do Instituto", key='sold_to_instituto')
             departamento = st.text_input("Departamento", key='sold_to_departamento')
@@ -163,7 +166,7 @@ with st.expander('Endereço'):
             if shipping_address_complement:
                 st.write('Complementos')
                 col15, col16 = st.columns(2)
-                with col15:    
+                with col15:
                     shipping_sigla_universidade = st.text_input("Sigla da Universidade", key='ship_to_universidade')
                     shipping_sigla_instituto = st.text_input("Sigla do Instituto", key='ship_to_instituto')
                     shipping_departamento = st.text_input("Departamento", key='ship_to_departamento')
@@ -174,7 +177,7 @@ with st.expander('Endereço'):
                     shipping_sala = st.text_input("Sala", key='ship_to_sala')
             else:
                 shipping_sigla_universidade = shipping_sigla_instituto = shipping_departamento = shipping_laboratorio = shipping_bloco_predio = shipping_andar = shipping_sala = None
-            
+
             with st.container(border=True):
                 st.write("Comprovante de Endereço de Entrega")
                 shipping_comprovante_endereco = st.file_uploader("Comprovante de Endereço de Entrega", type=['jpg', 'jpeg', 'png'], key='shipping_comprovante_endereco')
@@ -198,7 +201,7 @@ with st.expander('Informações de Contribuição'):
         uso_produtos = st.selectbox("Uso dos Produtos *", (
             'C3 = Consumidor Final: ICMS + IPI',
             'I3 = Industrialização: ICMS + IPI',
-            'C5 = Consumidor Final: IPI', 
+            'C5 = Consumidor Final: IPI',
             'C0 = Consumidor Final: S/ Impostos',
             'C1 = Consumidor Final: ICMS',
             'C2 = Consumidor Final: ICMS + Sub.Trib.',
@@ -228,13 +231,13 @@ with st.expander('Informações de Contribuição'):
         ), key='area_atuacao_empresa', placeholder='Escolha uma opção.', index=None)
         tipo_contribuicao = st.text_input("Tipo de Contribuição", key='tipo_contribuicao')
 
-    with st.container(border=True):    
+    with st.container(border=True):
         st.write('Incentivo Fiscal')
         col9, col10 = st.columns(2)
         with col9:
             icms = st.selectbox("ICMS *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='icms')
             ipi = st.selectbox("IPI *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='ipi')
-        with col10:    
+        with col10:
             pis = st.selectbox("PIS *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='pis')
             cofins = st.selectbox("COFINS *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='cofins')
         observacao_incentivo_geral = st.text_area("Observação", placeholder='Observação(ões) sobre Incentivo Fiscal', key='observacao_incentivo_geral')
@@ -410,7 +413,7 @@ if st.button("Enviar"):
         "nome_empresa": "Razão Social",
         "cnpj": "CNPJ/CPF",
         "telefone_fixo": "Telefone Fixo",
-        "email": "Email para envio do XML",
+        "email": "Email para envio MOBILe XML",
         "endereco": "Endereço",
         "endereco_n": "Número",
         "endereco_bairro": "Bairro",
