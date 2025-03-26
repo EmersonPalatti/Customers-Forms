@@ -81,11 +81,9 @@ def send_email(sender_email, receiver_email, subject, body, files, password):
 
     for file_path in files:
         with open(file_path, 'rb') as f:
-            # Usar tipo MIME específico para arquivos .xlsx
-            part = MIMEBase('application', 'vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            part = MIMEBase('application', 'vnd.openxmlformats-officedocument.spreadsheetml.sheet' if file_path.endswith('.xlsx') else 'image/png')
             part.set_payload(f.read())
             encoders.encode_base64(part)
-            # Explicitamente definir o nome do arquivo com a extensão .xlsx
             filename = os.path.basename(file_path)
             part.add_header('Content-Disposition', f'attachment; filename="{filename}"')
             msg.attach(part)
@@ -262,7 +260,10 @@ with st.expander('Comprovantes'):
     with col12:
         cartao_sintegra = st.file_uploader("Cartão do Sintegra", type=['jpg', 'jpeg', 'png'], help='Somente para empresas que possui I.E. (www.sintegra.gov.br)', key='cartao_sintegra')
         cartao_suframa = st.file_uploader("Cartão Suframa", type=['jpg', 'jpeg', 'png'], help='Somente para empresa que possui Inscrição Suframa, https://servicos.suframa.gov.br/servicos', key='cartao_suframa')
-        comprovante_faturamento = st.file_uploader("Contrato Social, Balanço Patrimonial, DRE ou Cartão CNPJ *", type=['jpg', 'jpeg', 'png'], key='comprovante_faturamento')
+        contrato_social = st.file_uploader("Contrato Social *", type=['jpg', 'jpeg', 'png'], key='contrato_social')
+        cartao_cnpj = st.file_uploader("Cartão CNPJ *", type=['jpg', 'jpeg', 'png'], key='cartao_cnpj')
+        balanco_patrimonial = st.file_uploader("Balanço Patrimonial", type=['jpg', 'jpeg', 'png'], key='balanco_patrimonial')
+        dre = st.file_uploader("DRE", type=['jpg', 'jpeg', 'png'], help='É obrigatório enviar ao menos um dos dois: Balanço Patrimonial ou DRE', key='dre')
 
 # Dicionário com os dados do formulário
 data = {
@@ -324,7 +325,10 @@ data = {
     "exclusivo_pessoa_fisica": exclusivo_pessoa_fisica,
     "cartao_sintegra": cartao_sintegra,
     "cartao_suframa": cartao_suframa,
-    "comprovante_faturamento": comprovante_faturamento
+    "contrato_social": contrato_social,
+    "cartao_cnpj": cartao_cnpj,
+    "balanco_patrimonial": balanco_patrimonial,
+    "dre": dre
 }
 
 # Dicionários com as células correspondentes para cada aba
@@ -370,7 +374,11 @@ cells_sold_to = {
     "cartao_receita_federal": "C86",
     "exclusivo_pessoa_fisica": "C187",
     "cartao_sintegra": "C111",
-    "cartao_suframa": "C147"
+    "cartao_suframa": "C147",
+    "contrato_social": "C163",
+    "cartao_cnpj": "C171",
+    "balanco_patrimonial": "C179",
+    "dre": "C195"
 }
 
 cells_ship_to = {
@@ -398,7 +406,11 @@ image_keys = [
     "exclusivo_pessoa_fisica",
     "cartao_sintegra",
     "cartao_suframa",
-    "shipping_comprovante_endereco"
+    "shipping_comprovante_endereco",
+    "contrato_social",
+    "cartao_cnpj",
+    "balanco_patrimonial",
+    "dre"
 ]
 
 # Configurações de e-mail usando st.secrets
@@ -429,7 +441,8 @@ if st.button("Enviar"):
         "cofins": "COFINS",
         "comprovante_endereco": "Comprovante de Endereço",
         "cartao_receita_federal": "Cartão da Receita Federal",
-        "comprovante_faturamento": "Contrato Social, Balanço Patrimonial, DRE ou Cartão CNPJ"
+        "contrato_social": "Contrato Social",
+        "cartao_cnpj": "Cartão CNPJ"
     }
 
     # Verificar se todos os campos obrigatórios estão preenchidos
@@ -438,6 +451,10 @@ if st.button("Enviar"):
         value = data.get(field)
         if value is None or (isinstance(value, str) and not value.strip()):
             missing_fields.append(label)
+
+    # Verificar se ao menos um dos campos "Balanço Patrimonial" ou "DRE" foi preenchido
+    if data.get("balanco_patrimonial") is None and data.get("dre") is None:
+        missing_fields.append("Balanço Patrimonial ou DRE (ao menos um é obrigatório)")
 
     if missing_fields:
         st.error(f"Por favor, preencha os seguintes campos obrigatórios: {', '.join(missing_fields)}")
@@ -455,11 +472,12 @@ if st.button("Enviar"):
                 save_to_excel(temp_path2, data, cells_sold_to, cells_ship_to, image_keys)
 
                 files = [temp_path1, temp_path2]
-                if data.get("comprovante_faturamento") is not None:
-                    temp_faturamento_path = os.path.join(temp_dir, f"Comprovante_Faturamento_{uuid.uuid4()}.png")
-                    with open(temp_faturamento_path, "wb") as f:
-                        f.write(data["comprovante_faturamento"].getvalue())
-                    files.append(temp_faturamento_path)
+                for field in ["contrato_social", "cartao_cnpj", "balanco_patrimonial", "dre"]:
+                    if data.get(field) is not None:
+                        temp_file_path = os.path.join(temp_dir, f"{field}_{uuid.uuid4()}.png")
+                        with open(temp_file_path, "wb") as f:
+                            f.write(data[field].getvalue())
+                        files.append(temp_file_path)
 
                 subject = f"Formulário de Cadastro - {nome_empresa}"
                 body = f"Segue em anexo os arquivos preenchidos para {nome_empresa}.\n\nEnviado automaticamente pelo formulário Streamlit."
