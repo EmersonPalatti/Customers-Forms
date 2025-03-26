@@ -109,8 +109,6 @@ with st.expander('Dados de Cadastro', expanded=True):
     nome_empresa = st.text_input("Razão Social *", placeholder='Merck S/A')
     col1, col2 = st.columns(2)
     with col1:
-        cnpj =
-```python
         cnpj = st.text_input("CNPJ/CPF *", placeholder='33.069.212/0038-76', help='CPF ou CNPJ, Formato: XX.XXX.XXX/XXXX-XX')
         inscricao_estadual = st.text_input('Inscrição Estadual')
         n_suframa = st.text_input('Número Suframa')
