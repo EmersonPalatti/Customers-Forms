@@ -71,7 +71,7 @@ def save_to_excel(path, data, cells_sold_to, cells_ship_to, image_keys, sheet_so
         if os.path.exists(temp_file):
             os.remove(temp_file)
 
-# Função para enviar e-mail com anexos (corrigida)
+# Função para enviar e-mail com anexos
 def send_email(sender_email, receiver_email, subject, body, files, password):
     msg = MIMEMultipart()
     msg['From'] = sender_email
@@ -81,7 +81,7 @@ def send_email(sender_email, receiver_email, subject, body, files, password):
 
     for file_path in files:
         with open(file_path, 'rb') as f:
-            part = MIMEBase('application', 'vnd.openxmlformats-officedocument.spreadsheetml.sheet' if file_path.endswith('.xlsx') else 'image/png')
+            part = MIMEBase('application', 'vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             part.set_payload(f.read())
             encoders.encode_base64(part)
             filename = os.path.basename(file_path)
@@ -109,7 +109,9 @@ with st.expander('Dados de Cadastro', expanded=True):
     nome_empresa = st.text_input("Razão Social *", placeholder='Merck S/A')
     col1, col2 = st.columns(2)
     with col1:
-        cnpj = st.text_input("CNPJ/CPF *", placeholder='33.069.212/0038-76', help='CPF or CNPJ, Format: XX.XXX.XXX/XXXX-XX')
+        cnpj =
+```python
+        cnpj = st.text_input("CNPJ/CPF *", placeholder='33.069.212/0038-76', help='CPF ou CNPJ, Formato: XX.XXX.XXX/XXXX-XX')
         inscricao_estadual = st.text_input('Inscrição Estadual')
         n_suframa = st.text_input('Número Suframa')
         cod_df = st.text_input('Código DF')
@@ -124,7 +126,7 @@ with st.expander('Endereço'):
         endereco = st.text_input("Endereço *", placeholder='Alameda Xingu')
         endereco_n = st.text_input("Número *", placeholder='350')
         endereco_bairro = st.text_input("Bairro *", placeholder='Alphaville Industrial')
-        cep = st.text_input("CEP *", placeholder='06455-030', help='Format: 00000-000')
+        cep = st.text_input("CEP *", placeholder='06455-030', help='Formato: 00000-000')
     with col4:
         cidade = st.text_input("Cidade *", placeholder='Barueri')
         uf = st.text_input("Estado *", placeholder='SP')
@@ -155,7 +157,7 @@ with st.expander('Endereço'):
                 shipping_endereco = st.text_input("Endereço", placeholder='Alameda Xingu', key='shipping_endereco')
                 shipping_endereco_n = st.text_input("Número", placeholder='350', key='shipping_endereco_n')
                 shipping_endereco_bairro = st.text_input("Bairro", placeholder='Alphaville Industrial', key='shipping_endereco_bairro')
-                shipping_cep = st.text_input("CEP", placeholder='06455-030', help='Format: 00000-000', key='shipping_cep')
+                shipping_cep = st.text_input("CEP", placeholder='06455-030', help='Formato: 00000-000', key='shipping_cep')
             with col14:
                 shipping_cidade = st.text_input("Cidade", placeholder='Barueri', key='shipping_cidade')
                 shipping_uf = st.text_input("Estado", placeholder='SP', key='shipping_uf')
@@ -246,7 +248,7 @@ with st.expander('Empresas Coligadas (preencher somente se necessário)'):
     associated_tax_ids = []
     for i in range(n_associated_companies):
         with st.container(border=True, key=f"associated_company_{i}"):
-            associated_name = st.text_input(f"__Razão Social__ - Empresa Coligada{i+1}", key=f"company_name_{i}")
+            associated_name = st.text_input(f"__Razão Social__ - Empresa Coligada {i+1}", key=f"company_name_{i}")
             associated_tax_id = st.text_input(f"__CNPJ__ - Empresa Coligada {i+1}", key=f"tax_id_{i}")
             associated_names.append(associated_name)
             associated_tax_ids.append(associated_tax_id)
@@ -256,14 +258,20 @@ with st.expander('Comprovantes'):
     with col11:
         comprovante_endereco = st.file_uploader("Comprovante de Endereço *", type=['jpg', 'jpeg', 'png'], key='comprovante_endereco')
         cartao_receita_federal = st.file_uploader("Cartão da Receita Federal *", type=['jpg', 'jpeg', 'png'], help='www.receita.fazenda.gov.br', key='cartao_receita_federal')
-        exclusivo_pessoa_fisica = st.file_uploader("Exclusivo para Pessoa Física - Vínculo com uma Instituição", type=['jpg', 'jpeg', 'png'], help='http://buscatextual.cnpq.br/buscatextual/busca.do?metodo=apresentar. Se a pessoa física não tiver um curriculo Lates, deverá apresentar outra comprovação.', key='exclusivo_pessoa_fisica')
+        exclusivo_pessoa_fisica = st.file_uploader("Exclusivo para Pessoa Física - Vínculo com uma Instituição", type=['jpg', 'jpeg', 'png'], help='http://buscatextual.cnpq.br/buscatextual/busca.do?metodo=apresentar. Se a pessoa física não tiver um currículo Lattes, deverá apresentar outra comprovação.', key='exclusivo_pessoa_fisica')
     with col12:
-        cartao_sintegra = st.file_uploader("Cartão do Sintegra", type=['jpg', 'jpeg', 'png'], help='Somente para empresas que possui I.E. (www.sintegra.gov.br)', key='cartao_sintegra')
-        cartao_suframa = st.file_uploader("Cartão Suframa", type=['jpg', 'jpeg', 'png'], help='Somente para empresa que possui Inscrição Suframa, https://servicos.suframa.gov.br/servicos', key='cartao_suframa')
-        contrato_social = st.file_uploader("Contrato Social *", type=['jpg', 'jpeg', 'png'], key='contrato_social')
-        cartao_cnpj = st.file_uploader("Cartão CNPJ *", type=['jpg', 'jpeg', 'png'], key='cartao_cnpj')
-        balanco_patrimonial = st.file_uploader("Balanço Patrimonial", type=['jpg', 'jpeg', 'png'], key='balanco_patrimonial')
-        dre = st.file_uploader("DRE", type=['jpg', 'jpeg', 'png'], help='É obrigatório enviar ao menos um dos dois: Balanço Patrimonial ou DRE', key='dre')
+        cartao_sintegra = st.file_uploader("Cartão do Sintegra", type=['jpg', 'jpeg', 'png'], help='Somente para empresas que possuem I.E. (www.sintegra.gov.br)', key='cartao_sintegra')
+        cartao_suframa = st.file_uploader("Cartão Suframa", type=['jpg', 'jpeg', 'png'], help='Somente para empresas que possuem Inscrição Suframa, https://servicos.suframa.gov.br/servicos', key='cartao_suframa')
+
+    # Novo container para documentos financeiros obrigatórios
+    with st.container(border=True):
+        st.write("Documentos Financeiros Obrigatórios")
+        col17, col18 = st.columns(2)
+        with col17:
+            contrato_social = st.file_uploader("Contrato Social *", type=['jpg', 'jpeg', 'png'], key='contrato_social')
+            cartao_cnpj = st.file_uploader("Cartão CNPJ *", type=['jpg', 'jpeg', 'png'], key='cartao_cnpj')
+        with col18:
+            balanco_patrimonial_ou_dre = st.file_uploader("Balanço Patrimonial e/ou DRE *", type=['jpg', 'jpeg', 'png'], key='balanco_patrimonial_ou_dre')
 
 # Dicionário com os dados do formulário
 data = {
@@ -327,8 +335,7 @@ data = {
     "cartao_suframa": cartao_suframa,
     "contrato_social": contrato_social,
     "cartao_cnpj": cartao_cnpj,
-    "balanco_patrimonial": balanco_patrimonial,
-    "dre": dre
+    "balanco_patrimonial_ou_dre": balanco_patrimonial_ou_dre
 }
 
 # Dicionários com as células correspondentes para cada aba
@@ -375,10 +382,9 @@ cells_sold_to = {
     "exclusivo_pessoa_fisica": "C187",
     "cartao_sintegra": "C111",
     "cartao_suframa": "C147",
-    "contrato_social": "C163",
-    "cartao_cnpj": "C171",
-    "balanco_patrimonial": "C179",
-    "dre": "C195"
+    "contrato_social": "C160",  # Ajuste a célula conforme necessário no Excel
+    "cartao_cnpj": "C170",      # Ajuste a célula conforme necessário no Excel
+    "balanco_patrimonial_ou_dre": "C180"  # Ajuste a célula conforme necessário no Excel
 }
 
 cells_ship_to = {
@@ -409,8 +415,7 @@ image_keys = [
     "shipping_comprovante_endereco",
     "contrato_social",
     "cartao_cnpj",
-    "balanco_patrimonial",
-    "dre"
+    "balanco_patrimonial_ou_dre"
 ]
 
 # Configurações de e-mail usando st.secrets
@@ -420,7 +425,7 @@ EMAIL_PASSWORD = st.secrets["EMAIL_PASSWORD"]
 
 # Botão para enviar os dados
 if st.button("Enviar"):
-    # Lista de campos obrigatórios
+    # Lista de campos obrigatórios atualizada
     required_fields = {
         "nome_empresa": "Razão Social",
         "cnpj": "CNPJ/CPF",
@@ -442,7 +447,8 @@ if st.button("Enviar"):
         "comprovante_endereco": "Comprovante de Endereço",
         "cartao_receita_federal": "Cartão da Receita Federal",
         "contrato_social": "Contrato Social",
-        "cartao_cnpj": "Cartão CNPJ"
+        "cartao_cnpj": "Cartão CNPJ",
+        "balanco_patrimonial_ou_dre": "Balanço Patrimonial e/ou DRE"
     }
 
     # Verificar se todos os campos obrigatórios estão preenchidos
@@ -451,10 +457,6 @@ if st.button("Enviar"):
         value = data.get(field)
         if value is None or (isinstance(value, str) and not value.strip()):
             missing_fields.append(label)
-
-    # Verificar se ao menos um dos campos "Balanço Patrimonial" ou "DRE" foi preenchido
-    if data.get("balanco_patrimonial") is None and data.get("dre") is None:
-        missing_fields.append("Balanço Patrimonial ou DRE (ao menos um é obrigatório)")
 
     if missing_fields:
         st.error(f"Por favor, preencha os seguintes campos obrigatórios: {', '.join(missing_fields)}")
@@ -472,12 +474,12 @@ if st.button("Enviar"):
                 save_to_excel(temp_path2, data, cells_sold_to, cells_ship_to, image_keys)
 
                 files = [temp_path1, temp_path2]
-                for field in ["contrato_social", "cartao_cnpj", "balanco_patrimonial", "dre"]:
-                    if data.get(field) is not None:
-                        temp_file_path = os.path.join(temp_dir, f"{field}_{uuid.uuid4()}.png")
-                        with open(temp_file_path, "wb") as f:
-                            f.write(data[field].getvalue())
-                        files.append(temp_file_path)
+                for doc in ["contrato_social", "cartao_cnpj", "balanco_patrimonial_ou_dre"]:
+                    if data.get(doc) is not None:
+                        temp_doc_path = os.path.join(temp_dir, f"{doc}_{uuid.uuid4()}.png")
+                        with open(temp_doc_path, "wb") as f:
+                            f.write(data[doc].getvalue())
+                        files.append(temp_doc_path)
 
                 subject = f"Formulário de Cadastro - {nome_empresa}"
                 body = f"Segue em anexo os arquivos preenchidos para {nome_empresa}.\n\nEnviado automaticamente pelo formulário Streamlit."
