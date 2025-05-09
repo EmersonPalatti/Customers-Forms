@@ -13,9 +13,8 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-# Caminhos relativos dos templates Excel
-TEMPLATE_PATH1 = "templates/Merck.xlsx"
-TEMPLATE_PATH2 = "templates/Sigma.xlsx"
+# Caminho relativo do template Excel
+TEMPLATE_PATH = "templates/FICHA CADASTRAL.xlsx"
 LOGO_PATH = "merck1.jpg"
 
 # Função para sanitizar o nome da empresa para uso em nomes de arquivos
@@ -30,11 +29,11 @@ def generate_unique_name(base_name, empresa):
     return f"{base_name}_{sanitized_empresa}.xlsx"
 
 # Função para salvar os dados no Excel
-def save_to_excel(path, data, cells_sold_to, cells_ship_to, image_keys, sheet_sold_to="FICHA CADASTRAL (Sold-to)", sheet_ship_to="FICHA CADASTRAL (Ship-to)"):
+def save_to_excel(path, data, cells_sold_to, cells_ship_to, image_keys, sheet_sold_to="Dados de faturamento", sheet_ship_to="Dados de entrega"):
     wb = load_workbook(path)
     temp_files = []
 
-    # Aba Sold-to (principal)
+    # Aba Dados de faturamento (principal)
     ws_sold_to = wb[sheet_sold_to]
     for key, cell in cells_sold_to.items():
         if key in image_keys and data.get(key) is not None:
@@ -52,7 +51,7 @@ def save_to_excel(path, data, cells_sold_to, cells_ship_to, image_keys, sheet_so
         elif isinstance(cell, str):
             ws_sold_to[cell] = data.get(key)
 
-    # Aba Ship-to (endereço de entrega, se aplicável)
+    # Aba Dados de entrega (endereço de entrega, se aplicável)
     if data.get("shipping_address", False):
         ws_ship_to = wb[sheet_ship_to]
         for key, cell in cells_ship_to.items():
@@ -261,7 +260,6 @@ with st.expander('Comprovantes'):
         cartao_sintegra = st.file_uploader("Cartão do Sintegra", type=['jpg', 'jpeg', 'png'], help='Somente para empresas que possuem I.E. (www.sintegra.gov.br)', key='cartao_sintegra')
         cartao_suframa = st.file_uploader("Cartão Suframa", type=['jpg', 'jpeg', 'png'], help='Somente para empresas que possuem Inscrição Suframa, https://servicos.suframa.gov.br/servicos', key='cartao_suframa')
 
-    # Novo container para documentos financeiros obrigatórios
     with st.container(border=True):
         st.write("Documentos Financeiros Obrigatórios")
         col17, col18 = st.columns(2)
@@ -380,9 +378,9 @@ cells_sold_to = {
     "exclusivo_pessoa_fisica": "C187",
     "cartao_sintegra": "C111",
     "cartao_suframa": "C147",
-    "contrato_social": "C160",  # Ajuste a célula conforme necessário no Excel
-    "cartao_cnpj": "C170",      # Ajuste a célula conforme necessário no Excel
-    "balanco_patrimonial_ou_dre": "C180"  # Ajuste a célula conforme necessário no Excel
+    "contrato_social": "C160",
+    "cartao_cnpj": "C170",
+    "balanco_patrimonial_ou_dre": "C180"
 }
 
 cells_ship_to = {
@@ -423,12 +421,12 @@ EMAIL_PASSWORD = st.secrets["EMAIL_PASSWORD"]
 
 # Botão para enviar os dados
 if st.button("Enviar"):
-    # Lista de campos obrigatórios atualizada
+    # Lista de campos obrigatórios
     required_fields = {
         "nome_empresa": "Razão Social",
         "cnpj": "CNPJ/CPF",
         "telefone_fixo": "Telefone Fixo",
-        "email": "Email para envio MOBILe XML",
+        "email": "Email para envio do XML",
         "endereco": "Endereço",
         "endereco_n": "Número",
         "endereco_bairro": "Bairro",
@@ -461,17 +459,13 @@ if st.button("Enviar"):
     else:
         with st.spinner("Processando e enviando os dados..."):
             with tempfile.TemporaryDirectory() as temp_dir:
-                filename1 = generate_unique_name("Merck", nome_empresa)
-                filename2 = generate_unique_name("Sigma", nome_empresa)
-                temp_path1 = os.path.join(temp_dir, filename1)
-                temp_path2 = os.path.join(temp_dir, filename2)
+                filename = generate_unique_name("FICHA_CADASTRAL", nome_empresa)
+                temp_path = os.path.join(temp_dir, filename)
 
-                shutil.copy(TEMPLATE_PATH1, temp_path1)
-                shutil.copy(TEMPLATE_PATH2, temp_path2)
-                save_to_excel(temp_path1, data, cells_sold_to, cells_ship_to, image_keys)
-                save_to_excel(temp_path2, data, cells_sold_to, cells_ship_to, image_keys)
+                shutil.copy(TEMPLATE_PATH, temp_path)
+                save_to_excel(temp_path, data, cells_sold_to, cells_ship_to, image_keys)
 
-                files = [temp_path1, temp_path2]
+                files = [temp_path]
                 for doc in ["contrato_social", "cartao_cnpj", "balanco_patrimonial_ou_dre"]:
                     if data.get(doc) is not None:
                         temp_doc_path = os.path.join(temp_dir, f"{doc}_{uuid.uuid4()}.png")
@@ -480,7 +474,7 @@ if st.button("Enviar"):
                         files.append(temp_doc_path)
 
                 subject = f"Formulário de Cadastro - {nome_empresa}"
-                body = f"Segue em anexo os arquivos preenchidos para {nome_empresa}.\n\nEnviado automaticamente pelo formulário Streamlit."
+                body = f"Segue em anexo o arquivo preenchido para {nome_empresa}.\n\nEnviado automaticamente pelo formulário Streamlit."
                 if send_email(SENDER_EMAIL, RECEIVER_EMAIL, subject, body, files, EMAIL_PASSWORD):
                     st.success("Formulário enviado com sucesso!")
                     st.markdown(
