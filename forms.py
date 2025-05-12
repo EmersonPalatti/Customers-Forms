@@ -175,10 +175,10 @@ with st.expander('Endereço'):
             else:
                 shipping_sigla_universidade = shipping_sigla_instituto = shipping_departamento = shipping_laboratorio = shipping_bloco_predio = shipping_andar = shipping_sala = None
 
-            with st.container(border=True):
-                st.write("Comprovante de Endereço de Entrega")
-                shipping_comprovante_endereco = st.file_uploader("Comprovante de Endereço de Entrega", type=['jpg', 'jpeg', 'png'], key='shipping_comprovante_endereco')
-                st.caption("O comprovante de endereço deve ser obtido em https://buscacepinter.correios.com.br/app/endereco/index.php. Tire um print e anexe aqui.")
+            # with st.container(border=True):
+            #     st.write("Comprovante de Endereço de Entrega")
+            #     shipping_comprovante_endereco = st.file_uploader("Comprovante de Endereço de Entrega", type=['jpg', 'jpeg', 'png'], key='shipping_comprovante_endereco')
+            #     st.caption("O comprovante de endereço deve ser obtido em https://buscacepinter.correios.com.br/app/endereco/index.php. Tire um print e anexe aqui.")
         else:
             shipping_endereco = shipping_endereco_n = shipping_endereco_bairro = shipping_cep = None
             shipping_cidade = shipping_uf = shipping_caixa_postal = None
