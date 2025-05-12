@@ -214,41 +214,33 @@ with st.expander('Informações de Contribuição'):
         ), placeholder='Escolha uma opção.', index=None, key='uso_produtos')
     with col8:
         area_atuacao_empresa = st.selectbox("Área de Atuação da Empresa *", (
-            'Ind./Comm./General',
-            'Chemical Industry',
-            'Government/nonprofit',
-            'Hospitals/Physicians',
-            'Biotechnology',
-            'Service/testing',
-            'Pharmaceutical',
-            'Universities/Schools',
-            'Diagnostics',
-            'Dealers/Exp./Resell',
-            'Distribuidor'
+            'Customer Sold to Sales Office desc',
+            'Applied',
+            'Academy',
         ), key='area_atuacao_empresa', placeholder='Escolha uma opção.', index=None)
         tipo_contribuicao = st.text_input("Tipo de Contribuição", key='tipo_contribuicao')
 
-    with st.container(border=True):
-        st.write('Incentivo Fiscal')
-        col9, col10 = st.columns(2)
-        with col9:
-            icms = st.selectbox("ICMS *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='icms')
-            ipi = st.selectbox("IPI *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='ipi')
-        with col10:
-            pis = st.selectbox("PIS *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='pis')
-            cofins = st.selectbox("COFINS *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='cofins')
-        observacao_incentivo_geral = st.text_area("Observação", placeholder='Observação(ões) sobre Incentivo Fiscal', key='observacao_incentivo_geral')
+    # with st.container(border=True):
+    #     st.write('Incentivo Fiscal')
+    #     col9, col10 = st.columns(2)
+    #     with col9:
+    #         icms = st.selectbox("ICMS *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='icms')
+    #         ipi = st.selectbox("IPI *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='ipi')
+    #     with col10:
+    #         pis = st.selectbox("PIS *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='pis')
+    #         cofins = st.selectbox("COFINS *", ('Isento', 'Contribuinte'), placeholder='Escolha uma opção.', index=None, key='cofins')
+    #     observacao_incentivo_geral = st.text_area("Observação", placeholder='Observação(ões) sobre Incentivo Fiscal', key='observacao_incentivo_geral')
 
-with st.expander('Empresas Coligadas (preencher somente se necessário)'):
-    n_associated_companies = st.number_input("Quantidade de Empresas Coligadas", min_value=0, max_value=4, value=0, key='n_associated_companies', help='Pode-se adicionar até mais 4 empresas coligadas.')
-    associated_names = []
-    associated_tax_ids = []
-    for i in range(n_associated_companies):
-        with st.container(border=True, key=f"associated_company_{i}"):
-            associated_name = st.text_input(f"__Razão Social__ - Empresa Coligada {i+1}", key=f"company_name_{i}")
-            associated_tax_id = st.text_input(f"__CNPJ__ - Empresa Coligada {i+1}", key=f"tax_id_{i}")
-            associated_names.append(associated_name)
-            associated_tax_ids.append(associated_tax_id)
+# with st.expander('Empresas Coligadas (preencher somente se necessário)'):
+#     n_associated_companies = st.number_input("Quantidade de Empresas Coligadas", min_value=0, max_value=4, value=0, key='n_associated_companies', help='Pode-se adicionar até mais 4 empresas coligadas.')
+#     associated_names = []
+#     associated_tax_ids = []
+#     for i in range(n_associated_companies):
+#         with st.container(border=True, key=f"associated_company_{i}"):
+#             associated_name = st.text_input(f"__Razão Social__ - Empresa Coligada {i+1}", key=f"company_name_{i}")
+#             associated_tax_id = st.text_input(f"__CNPJ__ - Empresa Coligada {i+1}", key=f"tax_id_{i}")
+#             associated_names.append(associated_name)
+#             associated_tax_ids.append(associated_tax_id)
 
 with st.expander('Comprovantes'):
     col11, col12 = st.columns(2)
@@ -317,13 +309,13 @@ data = {
     "uso_produtos": uso_produtos,
     "area_atuacao_empresa": area_atuacao_empresa,
     "tipo_contribuicao": tipo_contribuicao,
-    "icms": icms,
-    "ipi": ipi,
-    "pis": pis,
-    "cofins": cofins,
-    "observacao_incentivo_geral": observacao_incentivo_geral,
-    "associated_names": "; ".join(associated_names) if associated_names else None,
-    "associated_tax_ids": "; ".join(associated_tax_ids) if associated_tax_ids else None,
+    # "icms": icms,
+    # "ipi": ipi,
+    # "pis": pis,
+    # "cofins": cofins,
+    # "observacao_incentivo_geral": observacao_incentivo_geral,
+    # "associated_names": "; ".join(associated_names) if associated_names else None,
+    # "associated_tax_ids": "; ".join(associated_tax_ids) if associated_tax_ids else None,
     "comprovante_endereco": comprovante_endereco,
     "cartao_receita_federal": cartao_receita_federal,
     "exclusivo_pessoa_fisica": exclusivo_pessoa_fisica,
@@ -335,7 +327,7 @@ data = {
 }
 
 # Dicionários com as células correspondentes para cada aba
-cells_sold_to = {
+cells_ship_to = {
     "nome_empresa": "C11",
     "cnpj": "H11",
     "inscricao_estadual": "I11",
@@ -366,39 +358,50 @@ cells_sold_to = {
     "uso_produtos": "D27",
     "area_atuacao_empresa": "F27",
     "tipo_contribuicao": "H27",
-    "icms": "C31",
-    "ipi": "D31",
-    "pis": "E31",
-    "cofins": "F31",
-    "observacao_incentivo_geral": "G29",
-    "associated_names": ["C35", "C36", "C37", "C38"],
-    "associated_tax_ids": ["I35", "I36", "I37", "I38"],
-    "comprovante_endereco": "C55",
-    "cartao_receita_federal": "C86",
-    "exclusivo_pessoa_fisica": "C187",
-    "cartao_sintegra": "C111",
-    "cartao_suframa": "C147",
-    "contrato_social": "C160",
-    "cartao_cnpj": "C170",
-    "balanco_patrimonial_ou_dre": "C180"
+    # "icms": "C31",
+    # "ipi": "D31",
+    # "pis": "E31",
+    # "cofins": "F31",
+    # "observacao_incentivo_geral": "G29",
+    # "associated_names": ["C35", "C36", "C37", "C38"],
+    # "associated_tax_ids": ["I35", "I36", "I37", "I38"],
 }
 
-cells_ship_to = {
-    "shipping_endereco": "C13",
-    "shipping_endereco_n": "G13",
-    "shipping_endereco_bairro": "H13",
-    "shipping_cep": "I13",
-    "shipping_cidade": "J13",
-    "shipping_uf": "L13",
-    "shipping_caixa_postal": "C15",
-    "shipping_sigla_universidade": "C19",
-    "shipping_sigla_instituto": "E19",
-    "shipping_departamento": "F19",
-    "shipping_laboratorio": "H19",
-    "shipping_bloco_predio": "J19",
-    "shipping_andar": "K19",
-    "shipping_sala": "L19",
-    "shipping_comprovante_endereco": "C43"
+cells_sold_to = {
+    "nome_empresa": "C11",
+    "cnpj": "H11",
+    "inscricao_estadual": "I11",
+    "n_suframa": "J11",
+    "cod_df": "K11",
+    "telefone_fixo": "D15",
+    "celular": "E15",
+    "email": "F15",
+    "endereco": "C13",
+    "endereco_n": "G13",
+    "endereco_bairro": "H13",
+    "cep": "I13",
+    "cidade": "J13",
+    "uf": "L13",
+    "caixa_postal": "C15",
+    "sigla_universidade": "C19",
+    "sigla_instituto": "E19",
+    "departamento": "F19",
+    "laboratorio": "H19",
+    "bloco_predio": "J19",
+    "andar": "K19",
+    "sala": "L19",
+    "nome_contato": "C22",
+    "cargo": "F22",
+    "email_contato": "G22",
+    "telefone_contato": "J22",
+    "comprovante_endereco": "C165",
+    "cartao_receita_federal": "C175",
+    "exclusivo_pessoa_fisica": "C185",
+    "cartao_sintegra": "C195",
+    "cartao_suframa": "C205",
+    "contrato_social": "C215",
+    "cartao_cnpj": "C225",
+    "balanco_patrimonial_ou_dre": "C235"
 }
 
 # Lista de chaves que correspondem a imagens
