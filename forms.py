@@ -300,7 +300,7 @@ data = {
     "shipping_bloco_predio": shipping_bloco_predio,
     "shipping_andar": shipping_andar,
     "shipping_sala": shipping_sala,
-    "shipping_comprovante_endereco": shipping_comprovante_endereco,
+    # "shipping_comprovante_endereco": shipping_comprovante_endereco,
     "nome_contato": nome_contato,
     "cargo": cargo,
     "email_contato": email_contato,
