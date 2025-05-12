@@ -17,6 +17,8 @@ from email import encoders
 TEMPLATE_PATH = "templates/FICHA CADASTRAL.xlsx"
 LOGO_PATH = "merck1.jpg"
 
+st.set_page_config(page_icon='merck1.jpg', page_title='Merck Sigma - Registration Form')
+
 # Função para sanitizar o nome da empresa para uso em nomes de arquivos
 def sanitize_filename(name):
     name = re.sub(r'[\/:*?"<>|]', '', name)
